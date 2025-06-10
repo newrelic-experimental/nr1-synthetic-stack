@@ -1,0 +1,50 @@
+{
+    "schemaType": "VISUALIZATION",
+    "id": "synthetic-stack",
+    "displayName": "Synthetic Stack",
+    "description": "Display synthetic journeys in a stack",
+    "configuration": [
+        {
+            "name": "accountId",
+            "title": "Account ID",
+            "description": "Account ID to be associated with the query",
+            "type": "account-id"
+        },
+        {
+            "name": "query",
+            "title": "Query",
+            "description": "NRQL query for visualization",
+            "type": "nrql"
+        },
+        {
+            "name": "bucketSize",
+            "title": "Bucket size (min)",
+            "description": "Bucket size in minutes",
+            "type": "number"
+        },
+            {
+            "name": "statuses",
+            "title": "Statuses",
+            "type": "collection",
+            "items": [
+                {
+                "name": "statusLabel",
+                "title": "Label",
+                "type": "string"
+                },
+                {
+                "name": "statusField",
+                "title": "Field",
+                "description": "The name of the field in the query that returns the status count.",
+                "type": "string"
+                },
+                {
+                "name": "statusColor",
+                "title": "Color",
+                "description": "The color of the chart bar as css hex",
+                "type": "string"
+                }
+            ]
+        }
+    ]
+}

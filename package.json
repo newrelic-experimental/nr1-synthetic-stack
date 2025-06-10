@@ -1,0 +1,27 @@
+{
+    "private": true,
+    "name": "custom-visualization",
+    "version": "0.1.0",
+    "scripts": {
+        "start": "nr1 nerdpack:serve",
+        "test": "exit 0"
+    },
+    "nr1": {
+        "uuid": "0294eac5-36a4-421d-bb98-3389d5c4c6c5"
+    },
+    "dependencies": {
+        "moment": "^2.30.1",
+        "prop-types": "15.7.2",
+        "react": "17.0.2",
+        "react-dom": "17.0.2"
+    },
+    "browserslist": [
+        "last 2 versions",
+        "not ie < 11",
+        "not dead"
+    ],
+    "devDependencies": {
+        "@types/react": "^19.1.6",
+        "@types/react-dom": "^19.1.6"
+    }
+}
