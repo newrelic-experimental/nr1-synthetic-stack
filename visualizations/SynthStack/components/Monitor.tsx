@@ -1,25 +1,24 @@
 
 import { useProps } from "../context/VizPropsProvider";
 import { useMonitorContext } from "../context/MonitorContextProvider";
-import { AutoSizer, HeadingText, Icon } from "nr1";
+import { AutoSizer, HeadingText, Icon, navigation } from "nr1";
 import Stripe from "./Stripe";
 import moment from 'moment';
 
 
 type AttributesListProps = {
   name: string,
-  data: any
+  data: any[],
+  combined?: boolean,
+  monitorIds?: string[],
+  monitorGuid?: string
+
 };
 
-const Monitor = ({ data, name }: AttributesListProps) => {
+const Monitor = ({ data, name, combined, monitorGuid, monitorIds }: AttributesListProps) => {
 
   const monitorContext = useMonitorContext();
   const { bucketSize, beginMoment, endMoment, numberOfBuckets } = monitorContext;
-
-  // console.log("bucketSize:", bucketSize);
-  // console.log("beginMoment:", beginMoment);
-  // console.log("endMoment:", endMoment);
-  // console.log("numberOfBuckets:", numberOfBuckets);
 
   let checks = new Array(numberOfBuckets); // Initialize an array with the number of buckets
   for (let index = 0; index < numberOfBuckets; index++) {
@@ -27,6 +26,7 @@ const Monitor = ({ data, name }: AttributesListProps) => {
     let bucketEndMoment = bucketBeginMoment.clone().add(bucketSize, 'minutes');
     checks[index] = { beginMoment : bucketBeginMoment, endMoment: bucketEndMoment};
 
+    //put the data in for eah bucket.
     data.find((item) => {
         const itemMoment = moment(item.beginTimeSeconds * 1000 );
         if (itemMoment.isSame(bucketBeginMoment)) { 
@@ -36,22 +36,30 @@ const Monitor = ({ data, name }: AttributesListProps) => {
       return false; // Continue searching
     });
 
+
   }
-
- 
-  //console.log("Checks:", checks);
-    
-
   return (
-   <div>
-    <HeadingText className="monitorHeader" type={HeadingText.TYPE.HEADING_5}>
-      <Icon type={Icon.TYPE.HARDWARE_AND_SOFTWARE__SOFTWARE__SYNTHETICS_MONITOR} /> {name}
+   <div className={combined!== true ? "monitorContainer" : "monitorContainer monitorContainerCombined"}>
+    <HeadingText className="monitorHeader" type={HeadingText.TYPE.HEADING_5} >
+      <Icon type={combined? Icon.TYPE.INTERFACE__OPERATIONS__GROUP : Icon.TYPE.HARDWARE_AND_SOFTWARE__SOFTWARE__SYNTHETICS_MONITOR} /> <span className={combined ? "" : "hyperlink"} onClick={()=>{
+  console.log("open sesame", monitorGuid ? monitorGuid : null)
+
+                          if(monitorGuid) {
+                          navigation.openStackedNerdlet({
+                            id: 'synthetics.monitor-overview',
+                            urlState: {
+                              entityGuid: monitorGuid ,
+                            }
+                          });
+  }
+                      
+                      }}>{name}</span>
     </HeadingText>
     <div>
         <AutoSizer>
       {({ width, height }) => {
         return (
-          <Stripe data={checks} width={width} />
+          <Stripe data={checks} width={width} combined={combined} monitorIds={monitorIds}/>
         );
       }}
     </AutoSizer>

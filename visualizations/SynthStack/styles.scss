@@ -29,12 +29,11 @@
 
 .stripeRow {
     height: 60px;
-    margin-bottom:5px;
 }
 
 .stripeBlockContainer {
    float: left;
-   border-left: solid 1px white;
+   border-left: solid 1px #fafafa;
 }
 
 .stripeDurationBlockOuter {
@@ -81,4 +80,23 @@
 .checkRuleDivider {
     margin: 2em 0 1em 0;
     border-top: 1px solid #ccc;
+}
+
+.monitorContainer {
+   background-color: #fcfcfc;
+   padding: 5px 0px 5px 5px;
+   margin: 10px 0px 0px 0px;
+}
+
+.monitorContainerCombined {
+   background-color: #fcfcfc;
+}
+
+.monitorContainerCombined .stripeBlockContainer {
+   border-left: solid 1px #fcfcfc;
+}
+
+
+.hyperlink:hover {
+    text-decoration: underline;
 }

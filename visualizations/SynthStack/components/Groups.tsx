@@ -17,7 +17,6 @@ const Groups = ({ data }: AttributesListProps) => {
   }
 });
 
-console.log("Groups data:", groups);
   return (
     <div>
       {Object.keys(groups).map((groupName, index) => (

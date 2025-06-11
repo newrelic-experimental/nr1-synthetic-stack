@@ -8,9 +8,11 @@ import moment, { min } from 'moment';
 type AttributesListProps = {
   data: any,
   width: number
+  combined?: boolean,
+  monitorIds?: string[]
 };
 
-const Stripe = ({ data, width }: AttributesListProps) => {
+const Stripe = ({ data, width, combined, monitorIds }: AttributesListProps) => {
 
   const monitorContext = useMonitorContext();
   const {  numberOfBuckets } = monitorContext;
@@ -78,7 +80,7 @@ const Stripe = ({ data, width }: AttributesListProps) => {
 
    // let totalChecks = 0;
     let summaryItems = blockSummary.map((item, idx) => {
-      totalChecks+=item.count;
+      //totalChecks+=item.count;
       return <div key={idx} className="keyContainer">
         <div className="keyBlock" style={{backgroundColor: item.statusColor}}></div>
         <div className="keyBlockDescription">{item.statusLabel}: {item.count} ({item.percent.toFixed(2)}%) {item.execDuration!==undefined ? `${item.execDuration.toFixed(0)}ms`: ''}</div>
@@ -86,9 +88,9 @@ const Stripe = ({ data, width }: AttributesListProps) => {
     });
 
 
-// if(checkData.data) {
-
-
+  const queryFilter = monitorIds && Array.isArray(monitorIds)
+  ? `where entityGuid in (${monitorIds.map(id => `'${id}'`).join(', ')}) `
+  : `where entityGuid = '${checkData.data.entityGuid}'`;
 
 return <Tooltip text={`${checkData.beginMoment.format('MMMM Do YYYY, h:mm:ss')} - ${checkData.endMoment.format('h:mm:ss')} ,  ${totalChecks} checks`}>
 
@@ -112,7 +114,7 @@ return <Tooltip text={`${checkData.beginMoment.format('MMMM Do YYYY, h:mm:ss')} 
         </BlockText>
                 <NrqlQuery
             accountIds={[accountId]}
-            query={`SELECT toDateTime(timestamp,'h:m:s') as timestamp, locationLabel, result, entityGuid, executionDuration, id as checkId  from SyntheticCheck since ${checkData.beginMoment.valueOf()} until ${checkData.endMoment.valueOf()}  where entityGuid = '${checkData.data.entityGuid}' limit max`}
+            query={`SELECT toDateTime(timestamp,'h:m:s') as timestamp, locationLabel, result, entityGuid, executionDuration, id as checkId  from SyntheticCheck since ${checkData.beginMoment.valueOf()} until ${checkData.endMoment.valueOf()}  ${queryFilter} limit max`}
             pollInterval={0} 
             formatType={NrqlQuery.FORMAT_TYPE.RAW}
           >
@@ -132,7 +134,7 @@ return <Tooltip text={`${checkData.beginMoment.format('MMMM Do YYYY, h:mm:ss')} 
                               checkId: item.checkId
                             }
                           });
-                      }}>More Info</div></td>
+                      }}><span className="hyperlink">More Info</span></div></td>
                     </tr>
                 });
 
