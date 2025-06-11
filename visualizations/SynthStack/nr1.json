@@ -45,6 +45,13 @@
                 "type": "string"
                 }
             ]
+        },
+        {
+            "name": "fetchInterval",
+            "title": "Fetch interval (min)",
+            "description": "Auto fetch interval in minutes",
+            "type": "number",
+            "default": 5
         }
     ]
 }

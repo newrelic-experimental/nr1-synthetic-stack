@@ -7,7 +7,7 @@ import { MonitorContextProvider } from "../context/MonitorContextProvider";
 
 const SynthStack = () => {
   const vizProps = useProps();
-  const { greeting, accountId, query, bucketSize } = vizProps;
+  const { greeting, accountId, query, bucketSize, fetchInterval } = vizProps;
   
   let bucketSizeSelected = parseInt(bucketSize) || 5; // Default to 15 minutes if not specified
   let endMoment = moment().startOf('minute').subtract(moment().minute() % bucketSizeSelected, 'minutes');
@@ -18,11 +18,13 @@ const SynthStack = () => {
   console.log("Start: ",beginMoment);
   console.log("End: ",endMoment);
   
+  const fetchIntervalSec = (parseInt(fetchInterval) || 5) * 60;
+
   let data;
   if(query && query!="" && accountId && accountId!=""){ 
     let queryWithTimeWindow =  query + ` since ${beginMoment.valueOf()} until ${endMoment.valueOf()} timeseries ${bucketSizeSelected} minutes`;
     console.log("Query with time window: ", queryWithTimeWindow);
-    ({ data } = useNerdGraphQuery(accountId, queryWithTimeWindow, true));
+    ({ data } = useNerdGraphQuery(accountId, queryWithTimeWindow, true, fetchIntervalSec));
     console.log("Query data:", data);
   }
 
