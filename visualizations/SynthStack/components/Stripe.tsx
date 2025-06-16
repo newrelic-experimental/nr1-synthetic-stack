@@ -20,11 +20,13 @@ const Stripe = ({ data, width, combined, monitorIds }: AttributesListProps) => {
   const vizProps = useProps();
   const { statuses, accountId } = vizProps;
 
-  const bucketWidth = Math.floor((width - numberOfBuckets) / numberOfBuckets);
+  const bucketWidth = Math.floor((width - 100 - numberOfBuckets) / numberOfBuckets);
 
   //work out the maximum duration across all the data blocks
   let maxTotalDurationAllBlocks=0;
   let minTotalDurationAllBlocks=null;
+  let latestStatus=""
+  let latestDuration=0;
   data.forEach((checkData,index) => {
       if(checkData?.data?.totalAvgDuration) {
         if(checkData?.data?.totalAvgDuration > maxTotalDurationAllBlocks) {
@@ -34,6 +36,11 @@ const Stripe = ({ data, width, combined, monitorIds }: AttributesListProps) => {
           minTotalDurationAllBlocks = checkData.data.totalAvgDuration;
         }
       }
+      if(combined!== true && checkData?.data?.latestStatus && checkData?.data?.latestStatus!== "") {
+        latestStatus= checkData?.data?.latestStatus;
+        latestDuration = checkData?.data?.latestDuration;
+      }
+
   });
   if(minTotalDurationAllBlocks === null) { minTotalDurationAllBlocks = 0;}
 
@@ -88,6 +95,11 @@ const Stripe = ({ data, width, combined, monitorIds }: AttributesListProps) => {
     });
 
 
+
+
+
+
+
   const queryFilter = monitorIds && Array.isArray(monitorIds)
   ? `where entityGuid in (${monitorIds.map(id => `'${id}'`).join(', ')}) `
   : `where entityGuid = '${checkData.data.entityGuid}'`;
@@ -98,7 +110,7 @@ return <Tooltip text={`${checkData.beginMoment.format('MMMM Do YYYY, h:mm:ss')} 
   <PopoverTrigger >
     <div className="stripeBlockContainer" style={{width: bucketWidth+'px'}} key={index}>
       <div  className="stripeDurationBlockOuter" >
-        <div className="stripeDurationBlockInner" style={{ height: blockPercentDuration+'%' }}></div>
+        <div className="stripeDurationBlockInner" style={{ height: (blockPercentDuration)+'%' }}></div>
       </div>
       <div style={{width: '100%'}} className="stripeBlock" >
           {blockChart}
@@ -174,10 +186,35 @@ return <Tooltip text={`${checkData.beginMoment.format('MMMM Do YYYY, h:mm:ss')} 
 }
   });
 
+ let latestStatusDef = statuses.find((item)=>{  
+  return item.statusField==latestStatus
+});
+
+  let latestBlock;
+  if(combined=== true) {
+    latestBlock =<div className="latestBlock">
+          <div className="latestCheckLabel">Monitors:</div>
+          <div>
+            {monitorIds?.length} monitors
+          </div>
+        </div>
+  } else {
+    latestBlock =<div className="latestBlock">
+      <div className="latestCheckLabel">Latest check:</div>
+      <div className="latestStatusKey" style={{backgroundColor:  latestStatusDef?.statusColor || 'grey'}}></div>
+      <div className="latestStatusText">
+        <span  className="latestStatus">{latestStatusDef?.statusLabel || latestStatus}</span>
+          <br />
+        <span className="latestDuration" >{latestDuration}ms</span>
+      </div>
+    </div>
+  }
+
   
   return (
    <div className="stripeRow">
    {stripe}
+   {latestBlock}
    </div>
   );
 

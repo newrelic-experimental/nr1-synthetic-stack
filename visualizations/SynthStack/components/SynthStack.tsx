@@ -7,10 +7,11 @@ import { MonitorContextProvider } from "../context/MonitorContextProvider";
 
 const SynthStack = () => {
   const vizProps = useProps();
-  const { greeting, accountId, query, bucketSize, fetchInterval } = vizProps;
+  const { accountId, query, bucketSize, fetchInterval } = vizProps;
   
   let bucketSizeSelected = parseInt(bucketSize) || 5; // Default to 15 minutes if not specified
   let endMoment = moment().startOf('minute').subtract(moment().minute() % bucketSizeSelected, 'minutes');
+  endMoment.add(bucketSizeSelected, 'minute'); // Ensure we include the latest (incomplete) data
   let beginMoment = moment(endMoment).subtract(1, 'day');
 
   let numberOfBuckets = endMoment.diff(beginMoment, 'minutes') / bucketSizeSelected;

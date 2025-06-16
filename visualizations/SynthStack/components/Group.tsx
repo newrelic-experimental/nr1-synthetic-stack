@@ -23,9 +23,13 @@ const Group = ({ groupName, data}: AttributesListProps) => {
         <HeadingText className="groupHeader" type={HeadingText.TYPE.HEADING_3}>
             <Icon type={Icon.TYPE.DOCUMENTS__DOCUMENTS__FOLDER} /> {groupName}
         </HeadingText>
+
+
+        <Grid>
+        <GridItem columnSpan={12}>
         <AutoSizer>
             {({ width, height }) => {
-                const totalWidth = (Math.floor((width - numberOfBuckets) / numberOfBuckets) * numberOfBuckets) + numberOfBuckets;
+                const totalWidth = (Math.floor((width - 100 -numberOfBuckets) / numberOfBuckets) * numberOfBuckets) + numberOfBuckets;
                 return <div style={{ width: totalWidth + 'px' }}>
                 <Grid className="groupGrid" spacingType={[Grid.SPACING_TYPE.NONE, Grid.SPACING_TYPE.NONE]} >
                     <GridItem columnSpan={3}>
@@ -52,6 +56,9 @@ const Group = ({ groupName, data}: AttributesListProps) => {
 
             }}
         </AutoSizer>
+        </GridItem>
+      </Grid>
+
         
 
         <Monitors data={data} />

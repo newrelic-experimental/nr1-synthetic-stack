@@ -1,7 +1,7 @@
 
 import { useProps } from "../context/VizPropsProvider";
 import { useMonitorContext } from "../context/MonitorContextProvider";
-import { AutoSizer, HeadingText, Icon, navigation } from "nr1";
+import { AutoSizer, HeadingText, Icon, navigation, Grid, GridItem} from "nr1";
 import Stripe from "./Stripe";
 import moment from 'moment';
 
@@ -26,7 +26,7 @@ const Monitor = ({ data, name, combined, monitorGuid, monitorIds }: AttributesLi
     let bucketEndMoment = bucketBeginMoment.clone().add(bucketSize, 'minutes');
     checks[index] = { beginMoment : bucketBeginMoment, endMoment: bucketEndMoment};
 
-    //put the data in for eah bucket.
+    //put the data in for each bucket.
     data.find((item) => {
         const itemMoment = moment(item.beginTimeSeconds * 1000 );
         if (itemMoment.isSame(bucketBeginMoment)) { 
@@ -35,34 +35,40 @@ const Monitor = ({ data, name, combined, monitorGuid, monitorIds }: AttributesLi
         }
       return false; // Continue searching
     });
-
-
   }
+
   return (
    <div className={combined!== true ? "monitorContainer" : "monitorContainer monitorContainerCombined"}>
     <HeadingText className="monitorHeader" type={HeadingText.TYPE.HEADING_5} >
       <Icon type={combined? Icon.TYPE.INTERFACE__OPERATIONS__GROUP : Icon.TYPE.HARDWARE_AND_SOFTWARE__SOFTWARE__SYNTHETICS_MONITOR} /> <span className={combined ? "" : "hyperlink"} onClick={()=>{
-  console.log("open sesame", monitorGuid ? monitorGuid : null)
-
-                          if(monitorGuid) {
-                          navigation.openStackedNerdlet({
-                            id: 'synthetics.monitor-overview',
-                            urlState: {
-                              entityGuid: monitorGuid ,
-                            }
-                          });
-  }
-                      
-                      }}>{name}</span>
+          if(monitorGuid) {
+            navigation.openStackedNerdlet({
+              id: 'synthetics.monitor-overview',
+              urlState: {
+                entityGuid: monitorGuid ,
+              }
+            });
+          }                 
+    }}>{name}</span>
+      
     </HeadingText>
+
     <div>
-        <AutoSizer>
-      {({ width, height }) => {
-        return (
-          <Stripe data={checks} width={width} combined={combined} monitorIds={monitorIds}/>
-        );
-      }}
-    </AutoSizer>
+      <Grid>
+        <GridItem columnSpan={12}>
+            <AutoSizer>
+            {({ width }) => {
+              return (
+                <>
+                <Stripe data={checks} width={width} combined={combined} monitorIds={monitorIds}/>
+                </>
+              );
+            }}
+          </AutoSizer>
+        </GridItem>
+
+      </Grid>
+
     </div>
    </div>
   );
