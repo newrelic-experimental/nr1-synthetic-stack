@@ -193,7 +193,7 @@ return <Tooltip text={`${checkData.beginMoment.format('MMMM Do YYYY, h:mm:ss')} 
   let latestBlock;
   if(combined=== true) {
     latestBlock =<div className="latestBlock">
-          <div className="latestCheckLabel">Monitors:</div>
+          <div className="latestCheckLabel">Reporting:</div>
           <div>
             {monitorIds?.length} monitors
           </div>
