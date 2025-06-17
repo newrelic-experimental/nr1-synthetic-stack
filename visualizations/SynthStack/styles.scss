@@ -19,12 +19,21 @@
     padding:1em;
 }
 
-.groupHeader {
-    margin-top:2em;
+.groupContainer {
+    margin-top:4em;
+    border-left: solid 1px #c3c3c3;
+    padding-left:10px;
 }
 
 .monitorHeader {
      margin-top:5px;
+}
+
+.combinedMonitorGroup {
+}
+.combinedMonitorSubGroup {
+    margin-top: 2em;
+    margin-bottom: 2em;
 }
 
 .stripeRow {
@@ -91,18 +100,28 @@
 }
 
 .monitorContainerCombined {
-   background-color: #fcfcfc;
+   background-color: #f3f4f4;
 }
 
 .monitorContainerCombined .stripeBlockContainer {
-   border-left: solid 1px #fcfcfc;
+   border-left: solid 1px #f3f4f4;
 }
 
-
+.hyperlink {
+    cursor:pointer;
+}
 .hyperlink:hover {
     text-decoration: underline;
 }
-
+.topLinksContainer {
+    text-align: right
+}
+.toggleLink {
+    padding-left:2em;
+}
+.groupToggleLink {
+    padding-top:1em;
+}
 .latestBlock {
     float:left;
     margin-left:15px;

@@ -53,6 +53,13 @@
             "type": "number",
             "default": 5
         },
+          {
+            "name": "collapseByDefault",
+            "title": "Collapse groups",
+            "description": "Collpase groups by default",
+            "type": "boolean",
+            "default": false
+        },
         {
             "name": "ignoreTimePicker",
             "title": "Ignore time picker",

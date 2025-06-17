@@ -19,13 +19,8 @@ const Group = ({ groupName, data}: AttributesListProps) => {
 
 
     return <>
-    
-        <HeadingText className="groupHeader" type={HeadingText.TYPE.HEADING_3}>
-            <Icon type={Icon.TYPE.DOCUMENTS__DOCUMENTS__FOLDER} /> {groupName}
-        </HeadingText>
-
-
-        <Grid>
+        <div className="groupContainer">
+        <Grid >
         <GridItem columnSpan={12}>
         <AutoSizer>
             {({ width, height }) => {
@@ -58,10 +53,8 @@ const Group = ({ groupName, data}: AttributesListProps) => {
         </AutoSizer>
         </GridItem>
       </Grid>
-
-        
-
-        <Monitors data={data} />
+     <Monitors data={data} groupName={groupName}/>
+     </div>
     </>
 };
 

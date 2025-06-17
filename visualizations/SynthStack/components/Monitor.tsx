@@ -40,7 +40,7 @@ const Monitor = ({ data, name, combined, monitorGuid, monitorIds }: AttributesLi
   return (
    <div className={combined!== true ? "monitorContainer" : "monitorContainer monitorContainerCombined"}>
     <HeadingText className="monitorHeader" type={HeadingText.TYPE.HEADING_5} >
-      <Icon type={combined? Icon.TYPE.INTERFACE__OPERATIONS__GROUP : Icon.TYPE.HARDWARE_AND_SOFTWARE__SOFTWARE__SYNTHETICS_MONITOR} /> <span className={combined ? "" : "hyperlink"} onClick={()=>{
+      <Icon type={combined? Icon.TYPE.DOCUMENTS__DOCUMENTS__FOLDER : Icon.TYPE.HARDWARE_AND_SOFTWARE__SOFTWARE__SYNTHETICS_MONITOR} /> <span className={combined ? "" : "hyperlink"} onClick={()=>{
           if(monitorGuid) {
             navigation.openStackedNerdlet({
               id: 'synthetics.monitor-overview',

@@ -1,5 +1,6 @@
 import React from "react";
 import Group from "./Group";
+import { useMonitorContext } from "../context/MonitorContextProvider";
 
 type AttributesListProps = {
   data: any
@@ -7,6 +8,9 @@ type AttributesListProps = {
 
 const Groups = ({ data }: AttributesListProps) => {
 
+  const monitorContext = useMonitorContext();
+  const { setShowAllDetails, setToggleAllDetails } = monitorContext;
+  
   //Sort the data alphabetically by item.groupName
 const sortedData = data.sort((a, b) => {
   const groupA = a.groupName || "Default Group";
@@ -29,6 +33,10 @@ const sortedData = data.sort((a, b) => {
 
   return (
     <div>
+      <div className="topLinksContainer">
+        <span className="hyperlink toggleLink" onClick={() => { setShowAllDetails(true); setToggleAllDetails((prev) => !prev); }} >Show all monitors</span>
+        <span className="hyperlink toggleLink" onClick={() => { setShowAllDetails(false); setToggleAllDetails((prev) => !prev); }} >Hide all monitors</span>
+      </div>
       {Object.keys(groups).map((groupName, index) => (
         <Group key={index} groupName={groupName} data={groups[groupName]}/>
       ))}

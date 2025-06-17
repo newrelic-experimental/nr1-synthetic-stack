@@ -1,16 +1,27 @@
 
 import { useProps } from "../context/VizPropsProvider";
 import { useMonitorContext } from "../context/MonitorContextProvider";
+import { useState,useEffect } from "react";
 import Monitor from "./Monitor";
 type AttributesListProps = {
-  data: any
+  data: any,
+  groupName?: string
 };
 
-const Monitors = ({ data }: AttributesListProps) => {
+const Monitors = ({ data, groupName }: AttributesListProps) => {
 
   const vizProps = useProps();
   const { statuses } = vizProps;
-  
+  const monitorContext = useMonitorContext();
+  const {  showAllDetails, toggleAllDetails } = monitorContext;
+
+  const [showDetails, setShowDetails] = useState(showAllDetails === true ? true : false);
+
+  useEffect(() => {
+    setShowDetails(showAllDetails);
+  }, [showAllDetails, toggleAllDetails]);
+
+
   let combinedMonitorData=[];
     const monitors = []; // Initialize with a combined monitor
     data.forEach(item => {
@@ -78,7 +89,8 @@ const Monitors = ({ data }: AttributesListProps) => {
     // If one is number and one is string, convert both to string for comparison
     return String(a.sortField).localeCompare(String(b.sortField));
 });
-    const allMonitors=[{monitorName: "Combined", combined:true, monitorIds: combinedMonitorIds, data: combinedMonitor}, ...monitors]; // Combine the monitors with the combined monitor
+    const allMonitors=[{monitorName: groupName, combined:true, monitorIds: combinedMonitorIds, data: combinedMonitor}, ...monitors]; // Combine the monitors with the combined monitor
+
 
   const monitorRows = allMonitors.map((monitor, index) => (  
     <Monitor key={index} name={monitor.monitorName} combined={monitor.combined} monitorGuid={monitor.monitorGuid} monitorIds={monitor.monitorIds} data={monitor.data}/>
@@ -86,7 +98,20 @@ const Monitors = ({ data }: AttributesListProps) => {
 
   return (
    <>
-   {monitorRows}
+  <div className="combinedMonitorGroup">
+    {monitorRows[0]}
+    <div
+      className="hyperlink groupToggleLink"
+      onClick={() => { setShowDetails((prev) => !prev);}
+    }
+    >
+      {showDetails ? <span>Hide {monitorRows.length-1} monitors</span> : <span>Show {monitorRows.length-1} monitors</span>}
+    </div>
+   </div>
+   {showDetails && ( <div className="combinedMonitorSubGroup">
+      {monitorRows.slice(1)}
+    </div>
+   )}
    </>
   );
 
