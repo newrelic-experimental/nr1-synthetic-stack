@@ -29,7 +29,7 @@ const Group = ({ groupName, data}: AttributesListProps) => {
         <GridItem columnSpan={12}>
         <AutoSizer>
             {({ width, height }) => {
-                const totalWidth = (Math.floor((width - 100 -numberOfBuckets) / numberOfBuckets) * numberOfBuckets) + numberOfBuckets;
+                const totalWidth = (Math.floor((width - 120 -numberOfBuckets) / numberOfBuckets) * numberOfBuckets) + numberOfBuckets;
                 return <div style={{ width: totalWidth + 'px' }}>
                 <Grid className="groupGrid" spacingType={[Grid.SPACING_TYPE.NONE, Grid.SPACING_TYPE.NONE]} >
                     <GridItem columnSpan={3}>

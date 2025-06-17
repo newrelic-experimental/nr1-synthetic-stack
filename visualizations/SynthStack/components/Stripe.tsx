@@ -20,7 +20,7 @@ const Stripe = ({ data, width, combined, monitorIds }: AttributesListProps) => {
   const vizProps = useProps();
   const { statuses, accountId } = vizProps;
 
-  const bucketWidth = Math.floor((width - 100 - numberOfBuckets) / numberOfBuckets);
+  const bucketWidth = Math.floor((width - 120 - numberOfBuckets) / numberOfBuckets);
 
   //work out the maximum duration across all the data blocks
   let maxTotalDurationAllBlocks=0;
