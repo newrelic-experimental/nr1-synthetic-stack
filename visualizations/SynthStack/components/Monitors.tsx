@@ -8,11 +8,8 @@ type AttributesListProps = {
 
 const Monitors = ({ data }: AttributesListProps) => {
 
-    const monitorContext = useMonitorContext();
-    const { bucketSize, beginMoment, endMoment } = monitorContext;
-  
-    const vizProps = useProps();
-    const { statuses, accountId } = vizProps;
+  const vizProps = useProps();
+  const { statuses } = vizProps;
   
   let combinedMonitorData=[];
     const monitors = []; // Initialize with a combined monitor
@@ -21,9 +18,10 @@ const Monitors = ({ data }: AttributesListProps) => {
         combinedMonitorData.push({...item}); // Add to combined monitor
         const monitorName = item.monitorName || "Monitor not named";
         const monitorGuid = item.entityGuid || null;
+        const sortField = item.sortField || item.monitorName || ""; // Use sortField if available, otherwise monitorName
         let monitor = monitors.find(m => m.monitorName === monitorName); 
         if (!monitor) {
-          monitors.push({ monitorName, monitorGuid:item.entityGuid,  data: [item] });
+          monitors.push({ monitorName, sortField: sortField, monitorGuid:monitorGuid,  data: [item] });
         } else {
           monitor.data.push(item);
         }
@@ -71,6 +69,15 @@ const Monitors = ({ data }: AttributesListProps) => {
         combinedMonitor.push(newRecord);
       }
     })
+
+    //sort monitor by monitor name
+    monitors.sort((a, b) => { 
+      if (typeof a.sortField === "number" && typeof b.sortField === "number") {
+        return a.sortField - b.sortField;
+      }
+    // If one is number and one is string, convert both to string for comparison
+    return String(a.sortField).localeCompare(String(b.sortField));
+});
     const allMonitors=[{monitorName: "Combined", combined:true, monitorIds: combinedMonitorIds, data: combinedMonitor}, ...monitors]; // Combine the monitors with the combined monitor
 
   const monitorRows = allMonitors.map((monitor, index) => (  

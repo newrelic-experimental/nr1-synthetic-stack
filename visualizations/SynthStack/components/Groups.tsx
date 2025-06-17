@@ -6,8 +6,16 @@ type AttributesListProps = {
 };
 
 const Groups = ({ data }: AttributesListProps) => {
+
+  //Sort the data alphabetically by item.groupName
+const sortedData = data.sort((a, b) => {
+  const groupA = a.groupName || "Default Group";
+  const groupB = b.groupName || "Default Group";
+  return groupA.localeCompare(groupB);
+});
+
   const groups = {};
-  data.forEach(item => {
+  sortedData.forEach(item => {
     if(item && item.result!=null ) { //remove null values
     const groupName = item.groupName || "Default Group";
     if (!groups[groupName]) {
@@ -16,6 +24,8 @@ const Groups = ({ data }: AttributesListProps) => {
     groups[groupName].push(item);
   }
 });
+
+  
 
   return (
     <div>
