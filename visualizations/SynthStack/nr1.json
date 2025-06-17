@@ -52,6 +52,13 @@
             "description": "Auto fetch interval in minutes",
             "type": "number",
             "default": 5
+        },
+        {
+            "name": "ignoreTimePicker",
+            "title": "Ignore time picker",
+            "description": "Always ignore time picker",
+            "type": "boolean",
+            "default": false
         }
     ]
 }

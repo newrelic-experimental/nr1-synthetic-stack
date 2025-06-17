@@ -10,7 +10,7 @@ import { timeRangeBuckets } from "./timeRangeBuckets";
 
 const SynthStack = () => {
   const vizProps = useProps();
-  const { accountId, query, bucketSize, fetchInterval } = vizProps;
+  const { accountId, query, bucketSize, fetchInterval, ignoreTimePicker } = vizProps;
   const { timeRange } = useContext(PlatformStateContext);
 
   let bucketSizeSelected, endMoment, beginMoment, numberOfBuckets;
@@ -18,7 +18,7 @@ const SynthStack = () => {
 
   let data;
   if(query && query!="" && accountId && accountId!=""){ 
-    if(timeRange === undefined ) {
+    if(timeRange === undefined || ignoreTimePicker === true) {
       //default time range, uses settings in config and anchors to beginning of block
       bucketSizeSelected = parseInt(bucketSize) || 5; // Default to 15 minutes if not specified
       endMoment = moment().startOf('minute').subtract(moment().minute() % bucketSizeSelected, 'minutes');
