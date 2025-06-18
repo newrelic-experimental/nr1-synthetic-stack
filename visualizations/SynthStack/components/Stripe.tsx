@@ -126,7 +126,7 @@ return <Tooltip text={`${checkData.beginMoment.format('MMMM Do YYYY, h:mm:ss')} 
         </BlockText>
                 <NrqlQuery
             accountIds={[accountId]}
-            query={`SELECT toDateTime(timestamp,'h:m:s') as timestamp, locationLabel, result, entityGuid, executionDuration, id as checkId  from SyntheticCheck since ${checkData.beginMoment.valueOf()} until ${checkData.endMoment.valueOf()}  ${queryFilter} limit max`}
+            query={`SELECT toDateTime(timestamp,'h:m:s') as timestamp, locationLabel, result, entityGuid, executionDuration, id as checkId, monitorName  from SyntheticCheck since ${checkData.beginMoment.valueOf()} until ${checkData.endMoment.valueOf()}  ${queryFilter} limit max`}
             pollInterval={0} 
             formatType={NrqlQuery.FORMAT_TYPE.RAW}
           >
@@ -137,7 +137,8 @@ return <Tooltip text={`${checkData.beginMoment.format('MMMM Do YYYY, h:mm:ss')} 
                       <td>{item.timestamp}</td>
                       <td>{item.result}</td>
                       <td>{item.executionDuration}</td>
-                      <td>{item.locationLabel}</td>
+                      { combined && (<td>{item.monitorName}</td>) }
+                      { !combined && (<td>{item.locationLabel}</td>) }
                       <td><div onClick={()=>{
                         navigation.openStackedNerdlet({
                             id: 'synthetics.monitor-result-details',
@@ -156,7 +157,9 @@ return <Tooltip text={`${checkData.beginMoment.format('MMMM Do YYYY, h:mm:ss')} 
                       <th>Time</th>
                       <th>Result</th>
                       <th>Duration</th>
-                      <th>Location</th>
+                      { combined && (<th>Monitor</th>) }
+                      { !combined && (<th>Location</th>) }
+                      
                       <th>Detail</th>
                     </tr>
                   {tableRows}
