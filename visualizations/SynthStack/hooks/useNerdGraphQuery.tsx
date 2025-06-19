@@ -25,6 +25,9 @@ export const useNerdGraphQuery = ( accountId: string, query: string, ignorePicke
       try {
         const response = await NerdGraphQuery.query({ query: nrql, variables });
         const results = response?.data?.actor?.account?.result?.results;
+        if(response?.error) { 
+          console.log("GQL Error:", response.error);
+        }
         if (results && Array.isArray(results)) {
           setData(results);
           setLastUpdateStamp(Date.now());

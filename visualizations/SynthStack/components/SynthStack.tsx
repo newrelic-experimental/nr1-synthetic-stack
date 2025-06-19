@@ -6,7 +6,7 @@ import Groups from "./Groups";
 import moment from 'moment';
 import { MonitorContextProvider } from "../context/MonitorContextProvider";
 import {  PlatformStateContext } from "nr1";
-import { timeRangeBuckets } from "./timeRangeBuckets";
+import { timeRangeBuckets } from "./utils/timeRangeBuckets";
 
 const SynthStack = () => {
   const vizProps = useProps();
@@ -27,6 +27,7 @@ const SynthStack = () => {
       numberOfBuckets = endMoment.diff(beginMoment, 'minutes') / bucketSizeSelected;
       let queryWithTimeWindow =  query + ` since ${beginMoment.valueOf()} until ${endMoment.valueOf()} timeseries ${bucketSizeSelected} minutes`;
       ({ data } = useNerdGraphQuery(accountId, queryWithTimeWindow, true, fetchIntervalSec));
+      console.log("data",data);
     } else {
 
        const timeseriesBuckets = timeRangeBuckets(timeRange); //get best sized buckets for chosen duration
