@@ -14,6 +14,10 @@ export const MonitorContextProvider = ({ children, ...props }) => {
   const vizProps = useProps();
   const {  collapseByDefault } = vizProps;
 
+
+  const [loadedPercent, setloadedPercent] = useState(0);
+  const [monitorsToLoad, setMonitorsToLoad] = useState(0);
+
   // Initialize state for showAllDetails and toggleAllDetails
   const [showAllDetails, setShowAllDetails] = useState(collapseByDefault === true ? false : true);
   const [toggleAllDetails, setToggleAllDetails] = useState(true);
@@ -22,7 +26,11 @@ export const MonitorContextProvider = ({ children, ...props }) => {
     showAllDetails,
     setShowAllDetails,
     toggleAllDetails,
-    setToggleAllDetails
+    setToggleAllDetails,
+    loadedPercent,
+    setloadedPercent,
+    monitorsToLoad,
+    setMonitorsToLoad
   };
   return (
     

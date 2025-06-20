@@ -18,7 +18,7 @@ type AttributesListProps = {
 const Monitor = ({ data, name, combined, monitorGuid, monitorIds }: AttributesListProps) => {
 
   const monitorContext = useMonitorContext();
-  const { bucketSize, beginMoment, endMoment, numberOfBuckets } = monitorContext;
+  const { bucketSize, beginMoment, numberOfBuckets } = monitorContext;
 
   let checks = new Array(numberOfBuckets); // Initialize an array with the number of buckets
   for (let index = 0; index < numberOfBuckets; index++) {

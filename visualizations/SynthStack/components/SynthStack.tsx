@@ -7,6 +7,7 @@ import moment from 'moment';
 import { MonitorContextProvider } from "../context/MonitorContextProvider";
 import {  PlatformStateContext } from "nr1";
 import { timeRangeBuckets } from "./utils/timeRangeBuckets";
+import LoadingState from "./Loading";
 
 const SynthStack = () => {
   const vizProps = useProps();
@@ -93,14 +94,14 @@ const SynthStack = () => {
         <>
         <div className="vizContainer">
           <MonitorContextProvider bucketSize={bucketSizeSelected}  beginMoment={beginMoment} endMoment={endMoment} numberOfBuckets={numberOfBuckets}>
-              {data ? <Groups data={data} /> : <div>Loading...</div>}
+              {data&& data.length > 0 ? <Groups data={data} /> : <LoadingState />}
           </MonitorContextProvider>
         </div>
         </>
   );
 
   } else {
-    return <div>Loading...</div>
+    return <div>Configuration needs correcting, some fields are missing.</div>
   }
 
   

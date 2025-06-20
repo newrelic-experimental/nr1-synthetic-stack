@@ -13,6 +13,9 @@ const EmptyState: React.FC = () => (
         type={HeadingText.TYPE.HEADING_3}
       >
         Please provide a valid configuration.
+        <div>
+          <code>SELECT uniques(entityGuid,500) as entityGuids FROM SyntheticCheck WHERE  monitorName like '%production%'</code>
+        </div>
       </HeadingText>
     </CardBody>
   </Card>

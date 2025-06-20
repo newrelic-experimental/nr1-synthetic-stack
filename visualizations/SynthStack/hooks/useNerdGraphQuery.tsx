@@ -1,7 +1,9 @@
 import { useState, useEffect, useContext } from "react";
 import { NerdGraphQuery, PlatformStateContext } from "nr1";
 import moment from 'moment';
-import { nerdGraphQuery, nerdGraphQueryBatched } from "./utils/queries";
+import {  nerdGraphQueryBatched } from "./utils/queries";
+import { useMonitorContext } from "../context/MonitorContextProvider";
+
 
 const FETCH_INTERVAL_DEFAULT = 300; // fetch interval in s - 5 minutes
 
@@ -10,6 +12,7 @@ export const useNerdGraphQuery = ( accountId: string, queries: [], ignorePicker 
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
   const [lastUpdateStamp, setLastUpdateStamp] = useState(0);
+  const { setLoadedPercent, setMonitorsToLoad } =  useMonitorContext();
 
   useEffect(() => {
     if (!queries || queries.length === 0) {
@@ -20,6 +23,8 @@ export const useNerdGraphQuery = ( accountId: string, queries: [], ignorePicker 
 
     const fetchData = async () => {
 
+      
+      setMonitorsToLoad(queries.length);
       const batchSize = 20;
       const batches = Math.ceil(queries.length / batchSize);
       // Split queries into batches
@@ -30,8 +35,7 @@ export const useNerdGraphQuery = ( accountId: string, queries: [], ignorePicker 
       const variables = { id: parseInt(accountId, 10) };
 
       const aggregateData=[]; //all the data from all the queries will end up here
-      let counter=0;
-      setData([]);
+
       let endMoment = moment(); //ensure all queries query the same time block
       for (const queryBatch of queryBatches) {
         const nrqlQueriesGQL = nerdGraphQueryBatched(queryBatch, timeRange, defaultSince, ignorePicker,endMoment);  
