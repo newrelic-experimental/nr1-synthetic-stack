@@ -14,8 +14,6 @@ export const MonitorContextProvider = ({ children, ...props }) => {
   const vizProps = useProps();
   const {  collapseByDefault } = vizProps;
 
-
-  console.log("props.initialFilters",props.initialFilters)
   // Initialize state for showAllDetails and toggleAllDetails
   const [showAllDetails, setShowAllDetails] = useState(collapseByDefault === true ? false : true);
   const [toggleAllDetails, setToggleAllDetails] = useState(true);

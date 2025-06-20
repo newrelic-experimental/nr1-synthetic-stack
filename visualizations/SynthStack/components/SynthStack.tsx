@@ -14,7 +14,6 @@ const SynthStack = () => {
   const { accountId, query, bucketSize, fetchInterval, ignoreTimePicker, candidateQuery, statuses, showJustProblems } = vizProps;
   const { timeRange } = useContext(PlatformStateContext);
 
-
   const [loadedPercent, setloadedPercent] = useState(0);
   const [monitorsToLoad, setMonitorsToLoad] = useState(0);
   const [initialFilters, setInitialFilters] = useState([]);

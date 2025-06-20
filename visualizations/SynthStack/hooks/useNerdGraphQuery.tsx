@@ -17,11 +17,11 @@ export const useNerdGraphQuery = ( accountId: string, queries: [], ignorePicker 
 
   const prevTimeRangeRef = useRef();
   useEffect(() => {
-    if (prevTimeRangeRef.current && JSON.stringify(prevTimeRangeRef.current) !== JSON.stringify(timeRange)) {
+    if (prevTimeRangeRef.current && JSON.stringify(prevTimeRangeRef.current) !== (timeRange ? JSON.stringify(timeRange): "none")) {
       setData([]);
       if(setMonitorsToLoad) {setMonitorsToLoad(0)};
     }
-    prevTimeRangeRef.current = timeRange;
+    prevTimeRangeRef.current = timeRange ? JSON.stringify(timeRange): "none";
   }, [JSON.stringify(timeRange)]);
 
 
