@@ -1,11 +1,11 @@
-import React from "react";
-import { useMonitorContext } from "../context/MonitorContextProvider";
+import {Spinner} from 'nr1'
+const LoadingState = ({monitorsToLoad, loadedPercent}) => {  
 
-const LoadingState = () => {  
-
- const { loadedPercent, monitorsToLoad } =  useMonitorContext();
+ if(monitorsToLoad === 0) {
+    return <div>Determining monitors to load... <Spinner inline /></div>;   
+ }
  return <div>
-        Loading {monitorsToLoad} monitors... {loadedPercent}% complete
+        Loading {monitorsToLoad} monitors... {loadedPercent}% complete <Spinner inline />
   </div>
 };
 

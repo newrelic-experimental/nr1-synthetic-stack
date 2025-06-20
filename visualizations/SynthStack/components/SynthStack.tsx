@@ -1,5 +1,5 @@
 
-import {use, useContext, useEffect } from "react";
+import {use, useContext, useState, useRef, useEffect } from "react";
 import { useProps } from "../context/VizPropsProvider";
 import { useNerdGraphQuery } from "../hooks/useNerdGraphQuery";
 import Groups from "./Groups";
@@ -14,12 +14,18 @@ const SynthStack = () => {
   const { accountId, query, bucketSize, fetchInterval, ignoreTimePicker, candidateQuery } = vizProps;
   const { timeRange } = useContext(PlatformStateContext);
 
+
+  const [loadedPercent, setloadedPercent] = useState(0);
+  const [monitorsToLoad, setMonitorsToLoad] = useState(0);
+
   let bucketSizeSelected, endMoment, beginMoment, numberOfBuckets;
   const fetchIntervalSec = (parseInt(fetchInterval) || 5) * 60;
 
   let data;
   let monitorGuidData;
   let monitorGuids = [];
+
+
   if(query && query!="" && accountId && accountId!=""){ 
 
   
@@ -27,7 +33,7 @@ const SynthStack = () => {
 
 
       //default time range, uses settings in config and anchors to beginning of block
-      bucketSizeSelected = parseInt(bucketSize) || 5; // Default to 15 minutes if not specified
+      bucketSizeSelected = parseInt(bucketSize) || 10; // Default to 10 minutes if not specified
       endMoment = moment().startOf('minute').subtract(moment().minute() % bucketSizeSelected, 'minutes');
       endMoment.add(bucketSizeSelected, 'minute'); // Ensure we include the latest (incomplete) data
       beginMoment = moment(endMoment).subtract(1, 'day');
@@ -38,14 +44,12 @@ const SynthStack = () => {
       let queryGuidsWithTimeWindow =  candidateQuery + ` since ${beginMoment.valueOf()} until ${endMoment.valueOf()}`;
       ({ data: monitorGuidData  } = useNerdGraphQuery(accountId, [queryGuidsWithTimeWindow], true, fetchIntervalSec));
       monitorGuids=monitorGuidData[0]?.entityGuids || []; //get the guids from the first item in the array
-
-
-      console.log("Monitor Guids:", monitorGuids);
+    
       //gather data for monitors
       let queries = monitorGuids.map((monitorGuid) => {
         return query + ` since ${beginMoment.valueOf()} until ${endMoment.valueOf()} timeseries ${bucketSizeSelected} minutes WHERE entityGuid='${monitorGuid}'`;
       });
-      ({ data } = useNerdGraphQuery(accountId, queries, true, fetchIntervalSec));
+      ({ data } = useNerdGraphQuery(accountId, queries, true, fetchIntervalSec, "", setMonitorsToLoad, setloadedPercent));
       
     } else {
       //gather data for monitors
@@ -53,14 +57,15 @@ const SynthStack = () => {
       let queryGuidsWithTimeWindow =  candidateQuery;
       ({ data: monitorGuidData  } = useNerdGraphQuery(accountId, [queryGuidsWithTimeWindow], false, fetchIntervalSec));
       monitorGuids=monitorGuidData[0]?.entityGuids || []; //get the guids from the first item in the array
- 
+     
+
       const timeseriesBuckets = timeRangeBuckets(timeRange); //get best sized buckets for chosen duration
       //gather data
       let queries = monitorGuids.map((monitorGuid) => {
         return query+` timeseries ${timeseriesBuckets} WHERE entityGuid='${monitorGuid}'`;
       });
 
-       ({ data } =  useNerdGraphQuery(accountId, queries, false, fetchIntervalSec));
+       ({ data } =  useNerdGraphQuery(accountId, queries, false, fetchIntervalSec,"",setMonitorsToLoad, setloadedPercent));
        
        //find start and end buckets and number of buckets and their duration
        let earliest=0;
@@ -89,12 +94,12 @@ const SynthStack = () => {
        numberOfBuckets=bucketCounter;
        bucketSizeSelected= bucketSizeDetected;
     }
-
+    
     return (
         <>
         <div className="vizContainer">
           <MonitorContextProvider bucketSize={bucketSizeSelected}  beginMoment={beginMoment} endMoment={endMoment} numberOfBuckets={numberOfBuckets}>
-              {data&& data.length > 0 ? <Groups data={data} /> : <LoadingState />}
+              {data&& data.length > 0 ? <><Groups data={data} /></> : <LoadingState monitorsToLoad={monitorsToLoad} loadedPercent={loadedPercent} />}
           </MonitorContextProvider>
         </div>
         </>

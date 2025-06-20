@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef, use } from "react";
 import { NerdGraphQuery, PlatformStateContext } from "nr1";
 import moment from 'moment';
 import {  nerdGraphQueryBatched } from "./utils/queries";
@@ -7,25 +7,38 @@ import { useMonitorContext } from "../context/MonitorContextProvider";
 
 const FETCH_INTERVAL_DEFAULT = 300; // fetch interval in s - 5 minutes
 
-export const useNerdGraphQuery = ( accountId: string, queries: [], ignorePicker : boolean = false , fetchInterval: number = FETCH_INTERVAL_DEFAULT, defaultSince: string = "") => {
+export const useNerdGraphQuery = ( accountId: string, queries: [], ignorePicker : boolean = false , fetchInterval: number = FETCH_INTERVAL_DEFAULT, defaultSince: string = "",setMonitorsToLoad, setloadedPercent) => {
+  
   const { timeRange } = useContext(PlatformStateContext);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState([])
   const [error, setError] = useState(null);
   const [lastUpdateStamp, setLastUpdateStamp] = useState(0);
-  const { setLoadedPercent, setMonitorsToLoad } =  useMonitorContext();
+
+
+  const prevTimeRangeRef = useRef();
+  useEffect(() => {
+    if (prevTimeRangeRef.current && JSON.stringify(prevTimeRangeRef.current) !== JSON.stringify(timeRange)) {
+      setData([]);
+      if(setMonitorsToLoad) {setMonitorsToLoad(0)};
+    }
+    prevTimeRangeRef.current = timeRange;
+  }, [JSON.stringify(timeRange)]);
+
 
   useEffect(() => {
     if (!queries || queries.length === 0) {
-      //console.log("Query is required to fetch data.");
+      if(setMonitorsToLoad) {
+        setMonitorsToLoad(0);
+      }
       setData([]);
       return;
     }
 
     const fetchData = async () => {
-
-      
-      setMonitorsToLoad(queries.length);
-      const batchSize = 20;
+      if(setMonitorsToLoad) {
+        setMonitorsToLoad(queries.length);
+      }
+      const batchSize = 20; //reduce this if you hit nrql query problems
       const batches = Math.ceil(queries.length / batchSize);
       // Split queries into batches
       const queryBatches = Array.from({ length: batches }, (_, i) =>
@@ -37,7 +50,13 @@ export const useNerdGraphQuery = ( accountId: string, queries: [], ignorePicker 
       const aggregateData=[]; //all the data from all the queries will end up here
 
       let endMoment = moment(); //ensure all queries query the same time block
+      let batchIdx=0;
+
       for (const queryBatch of queryBatches) {
+        if(setloadedPercent) {
+          let queriesLoaded=((batchSize*(batchIdx++))/queries.length)* 100;
+          setloadedPercent(Math.floor(queriesLoaded));
+        }
         const nrqlQueriesGQL = nerdGraphQueryBatched(queryBatch, timeRange, defaultSince, ignorePicker,endMoment);  
         try {
           const response = await NerdGraphQuery.query({ query: nrqlQueriesGQL, variables });
@@ -62,6 +81,9 @@ export const useNerdGraphQuery = ( accountId: string, queries: [], ignorePicker 
       // all data loaded by this point
       setData(aggregateData);
       setLastUpdateStamp(Date.now());
+      if(setMonitorsToLoad) {
+        setMonitorsToLoad(0);
+      }
     };
 
     fetchData();
@@ -75,6 +97,7 @@ export const useNerdGraphQuery = ( accountId: string, queries: [], ignorePicker 
 
     const fetchIntervalms = (fetchInterval || FETCH_INTERVAL_DEFAULT) * 1000;
     const intervalId = setInterval(fetchData, fetchIntervalms);
+
 
     return () => clearInterval(intervalId);
   }, [ JSON.stringify(queries), accountId, JSON.stringify(timeRange), fetchInterval, ignorePicker, defaultSince]);

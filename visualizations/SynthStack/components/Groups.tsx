@@ -10,7 +10,7 @@ const Groups = ({ data }: AttributesListProps) => {
 
   const monitorContext = useMonitorContext();
   const { setShowAllDetails, setToggleAllDetails } = monitorContext;
-  
+
   //Sort the data alphabetically by item.groupName
 const sortedData = data.sort((a, b) => {
   const groupA = a.groupName || "Default Group";

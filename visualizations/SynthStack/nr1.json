@@ -12,13 +12,13 @@
         },
         {
             "name": "candidateQuery",
-            "title": "Candidate monitors",
+            "title": "Candidate monitors query",
             "description": "NRQL query for selecting monitors to display",
             "type": "nrql"
         },
         {
             "name": "query",
-            "title": "Query",
+            "title": "Monitor query",
             "description": "NRQL query for visualization",
             "type": "nrql"
         },
