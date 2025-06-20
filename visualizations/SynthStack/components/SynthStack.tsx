@@ -11,12 +11,13 @@ import LoadingState from "./Loading";
 
 const SynthStack = () => {
   const vizProps = useProps();
-  const { accountId, query, bucketSize, fetchInterval, ignoreTimePicker, candidateQuery } = vizProps;
+  const { accountId, query, bucketSize, fetchInterval, ignoreTimePicker, candidateQuery, statuses, showJustProblems } = vizProps;
   const { timeRange } = useContext(PlatformStateContext);
 
 
   const [loadedPercent, setloadedPercent] = useState(0);
   const [monitorsToLoad, setMonitorsToLoad] = useState(0);
+  const [initialFilters, setInitialFilters] = useState([]);
 
   let bucketSizeSelected, endMoment, beginMoment, numberOfBuckets;
   const fetchIntervalSec = (parseInt(fetchInterval) || 5) * 60;
@@ -24,6 +25,20 @@ const SynthStack = () => {
   let data;
   let monitorGuidData;
   let monitorGuids = [];
+
+
+  useEffect(() => {
+    //determine status filter 
+    let initialFilters=[];
+    if(showJustProblems === true) {
+      statuses.forEach((status) => {
+        if(!status.statusProblem === true) {
+          initialFilters.push(status.statusField);
+        }
+      });
+    }
+    setInitialFilters(initialFilters);
+  },[JSON.stringify(statuses)])
 
 
   if(query && query!="" && accountId && accountId!=""){ 
@@ -94,11 +109,11 @@ const SynthStack = () => {
        numberOfBuckets=bucketCounter;
        bucketSizeSelected= bucketSizeDetected;
     }
-    
+
     return (
         <>
         <div className="vizContainer">
-          <MonitorContextProvider bucketSize={bucketSizeSelected}  beginMoment={beginMoment} endMoment={endMoment} numberOfBuckets={numberOfBuckets}>
+          <MonitorContextProvider initialFilters={initialFilters} bucketSize={bucketSizeSelected}  beginMoment={beginMoment} endMoment={endMoment} numberOfBuckets={numberOfBuckets}>
               {data&& data.length > 0 ? <><Groups data={data} /></> : <LoadingState monitorsToLoad={monitorsToLoad} loadedPercent={loadedPercent} />}
           </MonitorContextProvider>
         </div>

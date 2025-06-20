@@ -15,7 +15,7 @@ type AttributesListProps = {
 const Stripe = ({ data, width, combined, monitorIds }: AttributesListProps) => {
 
   const monitorContext = useMonitorContext();
-  const {  numberOfBuckets } = monitorContext;
+  const {  numberOfBuckets, statusFilterList } = monitorContext;
   
   const vizProps = useProps();
   const { statuses, accountId } = vizProps;
@@ -27,8 +27,10 @@ const Stripe = ({ data, width, combined, monitorIds }: AttributesListProps) => {
   let minTotalDurationAllBlocks=null;
   let latestStatus=""
   let latestDuration=0;
+
   data.forEach((checkData,index) => {
-      if(checkData?.data?.totalAvgDuration) {
+
+      if(checkData?.data?.totalAvgDuration ) {
         if(checkData?.data?.totalAvgDuration > maxTotalDurationAllBlocks) {
           maxTotalDurationAllBlocks = checkData.data.totalAvgDuration;
         }
@@ -58,12 +60,16 @@ const Stripe = ({ data, width, combined, monitorIds }: AttributesListProps) => {
 
 
       let totalChecks=0;
+      let totalChecksAfterFilter=0;
  
       //determine how many checks there are in this block in total
       if(statuses && statuses.length > 0) {
         statuses.forEach((status) => {
           if(checkData?.data[status.statusField]) {
             totalChecks += checkData.data[status.statusField];
+            if(!statusFilterList.includes(status.statusField)) {
+              totalChecksAfterFilter += checkData.data[status.statusField];
+            }
           }
         });
       }
@@ -73,14 +79,19 @@ const Stripe = ({ data, width, combined, monitorIds }: AttributesListProps) => {
       //render the chart accordingly
       blockChart = statuses.map((status) => {
         if(checkData?.data[status.statusField]) {
-          const percentage = (checkData.data[status.statusField] / totalChecks) * 100;
+          const percentage = (checkData.data[status.statusField] / totalChecksAfterFilter) * 100;
           let summaryItem = blockSummary.find(item => item.statusField === status.statusField);
           if (summaryItem) {
             summaryItem.count = checkData.data[status.statusField];
             summaryItem.percent = percentage;
             summaryItem.execDuration=checkData.data[status.statusField+'Duration'];
           }
-          return <div style={{width: bucketWidth+'px', height: `${percentage}%`, backgroundColor:status.statusColor}} className="stripeBlockInner"></div>;
+          if(!statusFilterList.includes(status.statusField)) {
+            return <div style={{width: bucketWidth+'px', height: `${percentage}%`, backgroundColor:status.statusColor}} className="stripeBlockInner"></div>;
+          } else {
+            return null; //dont render this as its filtered
+          }
+          
         }
       });
     // }

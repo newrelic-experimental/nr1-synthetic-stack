@@ -49,6 +49,13 @@
                 "title": "Color",
                 "description": "The color of the chart bar as css hex",
                 "type": "string"
+                },
+                {
+                "name": "statusProblem",
+                "title": "Is problem?",
+                "description": "Check if this status is consixered a problematic state",
+                "type": "boolean",
+                "default": false
                 }
             ]
         },
@@ -66,6 +73,14 @@
             "type": "boolean",
             "default": false
         },
+         {
+                "name": "showJustProblems",
+                "title": "Show problems only",
+                "description": "Check if this to default to showing only problem states",
+                "type": "boolean",
+                "default": false
+        },
+      
         {
             "name": "ignoreTimePicker",
             "title": "Ignore time picker",
