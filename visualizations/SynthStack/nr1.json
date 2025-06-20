@@ -11,6 +11,12 @@
             "type": "account-id"
         },
         {
+            "name": "candidateQuery",
+            "title": "Candidate monitors",
+            "description": "NRQL query for selecting monitors to display",
+            "type": "nrql"
+        },
+        {
             "name": "query",
             "title": "Query",
             "description": "NRQL query for visualization",

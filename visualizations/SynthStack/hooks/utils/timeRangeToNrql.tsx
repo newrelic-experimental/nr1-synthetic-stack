@@ -1,8 +1,4 @@
-const MINUTE = 60000;
-const HOUR = 60 * MINUTE;
-const DAY = 24 * HOUR;
-
-export const timeRangeToNrql = function (timeRange) {
+export const timeRangeToNrql = function (timeRange,endMoment) {
   // Check if timeRange is undefined or null
   if (typeof timeRange === "undefined" || timeRange === null) {
     return ""; // "SINCE 30 minutes ago"; could also be returned here
@@ -15,17 +11,12 @@ export const timeRangeToNrql = function (timeRange) {
     return `SINCE ${timeRange.begin_time} UNTIL ${timeRange.end_time}`;
   }
 
-  // Handle duration based scenarios
+  // Handle duration based scenarios (all queries need same time window)
   if (timeRange.duration) {
-    if (timeRange.duration <= HOUR) {
-      return `SINCE ${timeRange.duration / MINUTE} MINUTES AGO`;
-    } else if (timeRange.duration <= DAY) {
-      return `SINCE ${timeRange.duration / HOUR} HOURS AGO`;
-    } else {
-      return `SINCE ${timeRange.duration / DAY} DAYS AGO`;
-    }
+      let beginMoment = endMoment.clone().subtract(timeRange.duration, 'milliseconds');
+      return `SINCE ${beginMoment.valueOf()} UNTIL ${endMoment.valueOf()}`;
   }
 
-  // Default case if none of the above conditions are met
   return ""; // "SINCE 30 minutes ago"; could also be returned here
 };
+

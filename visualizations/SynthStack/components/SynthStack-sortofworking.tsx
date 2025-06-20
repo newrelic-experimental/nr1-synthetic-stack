@@ -1,5 +1,5 @@
 
-import {use, useContext, useEffect } from "react";
+import {useContext } from "react";
 import { useProps } from "../context/VizPropsProvider";
 import { useNerdGraphQuery } from "../hooks/useNerdGraphQuery";
 import Groups from "./Groups";
@@ -16,6 +16,7 @@ const SynthStack = () => {
   let bucketSizeSelected, endMoment, beginMoment, numberOfBuckets;
   const fetchIntervalSec = (parseInt(fetchInterval) || 5) * 60;
 
+  
   let data;
   let monitorGuidData;
   let monitorGuids = [];
