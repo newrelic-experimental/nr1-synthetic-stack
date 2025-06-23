@@ -73,7 +73,7 @@ Once you have configured your states you can complete the rest of the configurat
 This NRQL query should simply return a list of entityGuids of the monitors you wish to display. This drives the data loading mechanism. Ensure you return a field called `entityGuids`, for example:
 
 ```
-SELECT uniques(entityGuid,1000) as entityGuids from SyntheticCheck where monitorName like '%Production%' 
+SELECT uniques(entityGuid,100) as entityGuids from SyntheticCheck where monitorName like '%Production%' 
 ```
 
 ### Monitor query
