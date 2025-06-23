@@ -40,7 +40,7 @@ Pro tip: Once a custom visualization is on a dashboard, you can click the ellips
 
 ## Configuration
 
-The visualization is configured through the configuration panel. Much of the configuration is done using an NRQL query that allows you to dynamically adjust thresholds and values based on the data.
+The visualization is configured through the configuration panel. Much of the configuration is done using two NRQL queries that allow you to dynamically adjust thresholds and values based on the data.
 
 ### Planning your visualization configuration
 Before configuring the visualization you should plan what 'states' you wish to display. You can display as many states as you wish. The simplest would be two states representing the synthetic check `result` values SUCCESS and FAILED. However you can go further adding more states based on the data. 
@@ -52,6 +52,7 @@ For each state we need to define the following fields in the configuration panel
 - Label: A friendly name for the state ("Success", "Slow", "Failed")
 - Field: The name of the field in the NRQL that returns the count of this state ("success", "slow", "failed")
 - Color: A CSS colour value ("green","purple","red")
+- Is Problem: Check this box if you consider this state a "problem state"
 
 
 ### Configuring the visualization
@@ -59,17 +60,26 @@ For each state we need to define the following fields in the configuration panel
 Once you have configured your states you can complete the rest of the configuration. The NRQL query is at the heart of the visualization and is decribed in more detail below. These are the fileds that can be configured:
 
 - Account ID: The account from which to gather synthtic data from
+- Candidate monitor query: The NRQL query to determine which monitors to show (described below)
 - Query: The NRQL query to gather data (described below)
 - Bucket Size: The size of each bucket in minutes (for the default 1 day view)
 - Statuses: A set of statuses (see details above)
 - Fetch Interval: Number of minutes between each data reload. 0 for none.
-- Collapse by default: If checked then the individual monitors will be hidden by default (only the combined aggregates will show)
+- Collapse groups: If checked then the individual monitors will be hidden by default (only the combined aggregates will show)
+- Show problems only: If checked then only problem states will be rendered by default (can toggle using the status togge)
 - Ignore time picker: If checked, dashboard time picker changes will be ignored
 
-### NRQL Query
-The NRQL query provides the data to hydrate the visualisation. Some fields are mandatory, some are optional.  
+### Candidate monitor query
+This NRQL query should simply return a list of entityGuids of the monitors you wish to display. This drives the data loading mechanism. Ensure you return a field called `entityGuids`, for example:
 
-This example query returns three states: success, slow and failed. It also defines the average duration to exclude failed syntehtics (Failed synthetics may fail quickly or time out so it can be a good idea to exclude them from aggregate duration calculations).
+```
+SELECT uniques(entityGuid,1000) as entityGuids from SyntheticCheck where monitorName like '%Production%' 
+```
+
+### Monitor query
+The second NRQL query provides the data to hydrate the visualisation. Some fields are mandatory, some are optional. This query is dispatched for each monitor provided by the first query.
+
+In this example query we return three states: success, slow and failed. It also defines the average duration to exclude failed syntehtics (Failed synthetics may fail quickly or time out so it can be a good idea to exclude them from aggregate duration calculations).
 
 ```
 WITH 
