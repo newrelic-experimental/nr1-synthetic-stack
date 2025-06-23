@@ -49,25 +49,25 @@ In this example configuration we have three states "Success", "Slow", and "Faile
 
 For each state we need to define the following fields in the configuration panel:
 
-- Label: A friendly name for the state ("Success", "Slow", "Failed")
-- Field: The name of the field in the NRQL that returns the count of this state ("success", "slow", "failed")
-- Color: A CSS colour value ("green","purple","red")
-- Is Problem: Check this box if you consider this state a "problem state"
+- **Label:** A friendly name for the state ("Success", "Slow", "Failed")
+- **Field:** The name of the field in the NRQL that returns the count of this state ("success", "slow", "failed")
+- **Color:** A CSS colour value ("green","purple","red")
+- **Is Problem:** Check this box if you consider this state a "problem state"
 
 
 ### Configuring the visualization
 
 Once you have configured your states you can complete the rest of the configuration. The NRQL query is at the heart of the visualization and is decribed in more detail below. These are the fileds that can be configured:
 
-- Account ID: The account from which to gather synthtic data from
-- Candidate monitor query: The NRQL query to determine which monitors to show (described below)
-- Query: The NRQL query to gather data (described below)
-- Bucket Size: The size of each bucket in minutes (for the default 1 day view)
-- Statuses: A set of statuses (see details above)
-- Fetch Interval: Number of minutes between each data reload. 0 for none.
-- Collapse groups: If checked then the individual monitors will be hidden by default (only the combined aggregates will show)
-- Show problems only: If checked then only problem states will be rendered by default (can toggle using the status togge)
-- Ignore time picker: If checked, dashboard time picker changes will be ignored
+- **Account ID:** The account from which to gather synthtic data from
+- **Candidate monitor query:** The NRQL query to determine which monitors to show (described below)
+- **Query:** The NRQL query to gather data (described below)
+- **Bucket Size:** The size of each bucket in minutes (for the default 1 day view)
+- **Statuses:** A set of statuses (see details above)
+- **Fetch Interval:** Number of minutes between each data reload. 0 for none.
+- **Collapse groups:** If checked then the individual monitors will be hidden by default (only the combined aggregates will show)
+- **Show problems only:** If checked then only problem states will be rendered by default (can toggle using the status togge)
+- **Ignore time picker:** If checked, dashboard time picker changes will be ignored
 
 ### Candidate monitor query
 This NRQL query should simply return a list of entityGuids of the monitors you wish to display. This drives the data loading mechanism. Ensure you return a field called `entityGuids`, for example:
@@ -107,13 +107,13 @@ We also define in the WITH clasue the status for each check, using the `result` 
 
 The rest of the query provides the data to hydrate the visualization, each field is as follows:
 
-- entityGuid: (Mandatory) This field is the monitor entity's GUID
-- monitorName: (Mandatory) This surfaces the name of the monitor as it appears on the visualization.
-- sortField: (optional) This allows you to control the sort order of monitors, in this example its simply set to the monitor name but you could use concat() with multiple fields to get creative and hoist specific monitors to the top of the list.
-- groupName: (Mandatory) This field indicates the group the monitor should aggregated within. In this example we use the monitor type, but you can be creative group by anything appropriate for your business.
-- latestDuration: (Mandatory) This provides the duration of the most recent check.
-- latestStatus: (Mandatory) This provides the most recent check's state. Important: Its *value* should match the 'field' values in the Status configuration.
-- Status count fields: (Mandatory) You need to provide fields that return the count of checks for each status. The names of these fields must relate to the statuses you have defined. In this example that is 'success', 'slow' and 'failed'.
-- Status duration fields: (Optional) You can provide average duration fields for each of your states. The name of the field should be the field name suffixed "Duration". In this example we return "successDuration" and "slowDuration", we have chosen not to provide a duration for failed results, but you can if you like.
-- totalAvgDuration: (Mandatory) This value is used to detemine the duration bar chart above each status bucket. In this example we decide to only include successful checks in this calculation.
+- **entityGuid:** (Mandatory) This field is the monitor entity's GUID
+- **monitorName:** (Mandatory) This surfaces the name of the monitor as it appears on the visualization.
+- **sortField:** (optional) This allows you to control the sort order of monitors, in this example its simply set to the monitor name but you could use concat() with multiple fields to get creative and hoist specific monitors to the top of the list.
+- **groupName:** (Mandatory) This field indicates the group the monitor should aggregated within. In this example we use the monitor type, but you can be creative group by anything appropriate for your business.
+- **latestDuration:** (Mandatory) This provides the duration of the most recent check.
+- **latestStatus:** (Mandatory) This provides the most recent check's state. Important: Its *value* should match the 'field' values in the Status configuration.
+- **Status count fields:** (Mandatory) You need to provide fields that return the count of checks for each status. The names of these fields must relate to the statuses you have defined. In this example that is 'success', 'slow' and 'failed'.
+- **Status duration fields:** (Optional) You can provide average duration fields for each of your states. The name of the field should be the field name suffixed "Duration". In this example we return "successDuration" and "slowDuration", we have chosen not to provide a duration for failed results, but you can if you like.
+- **totalAvgDuration:** (Mandatory) This value is used to detemine the duration bar chart above each status bucket. In this example we decide to only include successful checks in this calculation.
 
