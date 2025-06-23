@@ -25,9 +25,9 @@ const Monitors = ({ data, groupName }: AttributesListProps) => {
   let combinedMonitorData=[];
     const monitors = []; // Initialize with a combined monitor
     data.forEach(item => {
-      if(item && item.result!=null ) {
+      if(item && item.monitorName!==null) { // Eremove nulls
         combinedMonitorData.push({...item}); // Add to combined monitor
-        const monitorName = item.monitorName || "Monitor not named";
+        const monitorName = item.monitorName || "Monitor not named "+ (item.entityGuid || ""); 
         const monitorGuid = item.entityGuid || null;
         const sortField = item.sortField || item.monitorName || ""; // Use sortField if available, otherwise monitorName
         let monitor = monitors.find(m => m.monitorName === monitorName); 

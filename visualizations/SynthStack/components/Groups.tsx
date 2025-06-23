@@ -20,7 +20,6 @@ const Groups = ({ data }: AttributesListProps) => {
   };
 
   const removeFromFilterList = (status) => {
-    console.log("removing from filter list", status);
     setStatusFilterList(statusFilterList.filter((item) => item !== status));
   };
 
@@ -33,7 +32,7 @@ const sortedData = data.sort((a, b) => {
 
   const groups = {};
   sortedData.forEach(item => {
-    if(item && item.result!=null ) { //remove null values
+    if(item && item.monitorName !== null ) { //remove null values
     const groupName = item.groupName || "Default Group";
     if (!groups[groupName]) {
       groups[groupName] = [];

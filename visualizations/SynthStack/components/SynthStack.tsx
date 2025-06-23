@@ -58,13 +58,11 @@ const SynthStack = () => {
       let queryGuidsWithTimeWindow =  candidateQuery + ` since ${beginMoment.valueOf()} until ${endMoment.valueOf()}`;
       ({ data: monitorGuidData  } = useNerdGraphQuery(accountId, [queryGuidsWithTimeWindow], true, fetchIntervalSec));
       monitorGuids=monitorGuidData[0]?.entityGuids || []; //get the guids from the first item in the array
-    
       //gather data for monitors
       let queries = monitorGuids.map((monitorGuid) => {
         return query + ` since ${beginMoment.valueOf()} until ${endMoment.valueOf()} timeseries ${bucketSizeSelected} minutes WHERE entityGuid='${monitorGuid}'`;
       });
       ({ data } = useNerdGraphQuery(accountId, queries, true, fetchIntervalSec, "", setMonitorsToLoad, setloadedPercent));
-      
     } else {
       //gather data for monitors
       
