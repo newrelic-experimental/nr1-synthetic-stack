@@ -117,3 +117,5 @@ The rest of the query provides the data to hydrate the visualization, each field
 - **Status duration fields:** (Optional) You can provide average duration fields for each of your states. The name of the field should be the field name suffixed "Duration". In this example we return "successDuration" and "slowDuration", we have chosen not to provide a duration for failed results, but you can if you like.
 - **totalAvgDuration:** (Mandatory) This value is used to detemine the duration bar chart above each status bucket. In this example we decide to only include successful checks in this calculation.
 
+>>> Note: The query may include anywhere the special string `[[ENTITY-GUID]]` that will be replaced with the entityGuid of the monitor. This allow you to use the entity guid in sub queries, such as calculating the 'consideredSlow' value from a historical average or percentile.
+

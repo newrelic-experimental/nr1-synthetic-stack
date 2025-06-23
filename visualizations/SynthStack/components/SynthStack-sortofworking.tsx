@@ -43,7 +43,7 @@ const SynthStack = () => {
       console.log("Monitor Guids:", monitorGuids);
       //gather data for monitors
       let queries = monitorGuids.map((monitorGuid) => {
-        return query + ` since ${beginMoment.valueOf()} until ${endMoment.valueOf()} timeseries ${bucketSizeSelected} minutes WHERE entityGuid='${monitorGuid}'`;
+        return query.replace(/ENTITY-GUID/g, monitorGuid) + ` since ${beginMoment.valueOf()} until ${endMoment.valueOf()} timeseries ${bucketSizeSelected} minutes WHERE entityGuid='${monitorGuid}'`;
       });
       ({ data } = useNerdGraphQuery(accountId, queries, true, fetchIntervalSec));
       
@@ -57,7 +57,7 @@ const SynthStack = () => {
       const timeseriesBuckets = timeRangeBuckets(timeRange); //get best sized buckets for chosen duration
       //gather data
       let queries = monitorGuids.map((monitorGuid) => {
-        return query+` timeseries ${timeseriesBuckets} WHERE entityGuid='${monitorGuid}'`;
+        return query.replace(/ENTITY-GUID/g, monitorGuid)+` timeseries ${timeseriesBuckets} WHERE entityGuid='${monitorGuid}'`;
       });
 
        ({ data } =  useNerdGraphQuery(accountId, queries, false, fetchIntervalSec));

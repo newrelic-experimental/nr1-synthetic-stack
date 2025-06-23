@@ -60,7 +60,7 @@ const SynthStack = () => {
       monitorGuids=monitorGuidData[0]?.entityGuids || []; //get the guids from the first item in the array
       //gather data for monitors
       let queries = monitorGuids.map((monitorGuid) => {
-        return query + ` since ${beginMoment.valueOf()} until ${endMoment.valueOf()} timeseries ${bucketSizeSelected} minutes WHERE entityGuid='${monitorGuid}'`;
+        return query.replace(/\[\[ENTITY-GUID\]\]/g, monitorGuid) + ` since ${beginMoment.valueOf()} until ${endMoment.valueOf()} timeseries ${bucketSizeSelected} minutes WHERE entityGuid='${monitorGuid}'`;
       });
       ({ data } = useNerdGraphQuery(accountId, queries, true, fetchIntervalSec, "", setMonitorsToLoad, setloadedPercent));
     } else {
@@ -74,7 +74,7 @@ const SynthStack = () => {
       const timeseriesBuckets = timeRangeBuckets(timeRange); //get best sized buckets for chosen duration
       //gather data
       let queries = monitorGuids.map((monitorGuid) => {
-        return query+` timeseries ${timeseriesBuckets} WHERE entityGuid='${monitorGuid}'`;
+        return query.replace(/\[\[ENTITY-GUID\]\]/g, monitorGuid)+` timeseries ${timeseriesBuckets} WHERE entityGuid='${monitorGuid}'`;
       });
 
        ({ data } =  useNerdGraphQuery(accountId, queries, false, fetchIntervalSec,"",setMonitorsToLoad, setloadedPercent));
