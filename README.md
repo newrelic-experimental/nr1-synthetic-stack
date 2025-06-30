@@ -4,6 +4,8 @@
 
 This visualization provides a historical view of multiple synthetic journeys at once. It is driven by relatively simple NRQL configuration to make it easy to understand and reason about synthetic monitor status across a broad range of monitors at once.
 
+![Screenshot](./screenshot1.png)
+
 ## Installation pre-requisites
 Before you start make sure you have the following installed:
 
