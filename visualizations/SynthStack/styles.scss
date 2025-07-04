@@ -85,6 +85,10 @@
     padding-left: 5px;
 }
 
+.scrollableCheckTableContainer {
+      max-height: 300px;
+      overflow-y: auto;
+}
 .checkTable {
     font-size:8px;
 }

@@ -18,9 +18,13 @@ const Stripe = ({ data, width, combined, monitorIds }: AttributesListProps) => {
   const {  numberOfBuckets, statusFilterList } = monitorContext;
   
   const vizProps = useProps();
-  const { statuses, accountId } = vizProps;
+  const { statuses, accountId, durationInMilliseconds } = vizProps;
 
   const bucketWidth = Math.floor((width - 120 - numberOfBuckets) / numberOfBuckets);
+
+ const displayDuration = (duration)=>{
+  return durationInMilliseconds===true ? duration.toFixed(0) + 'ms' : (duration / 1000).toFixed(2) + 's' ;
+ }
 
   //work out the maximum duration across all the data blocks
   let maxTotalDurationAllBlocks=0;
@@ -101,7 +105,7 @@ const Stripe = ({ data, width, combined, monitorIds }: AttributesListProps) => {
       //totalChecks+=item.count;
       return <div key={idx} className="keyContainer">
         <div className="keyBlock" style={{backgroundColor: item.statusColor}}></div>
-        <div className="keyBlockDescription">{item.statusLabel}: {item.count} ({item.percent.toFixed(2)}%) {item.execDuration!==undefined ? `${item.execDuration.toFixed(0)}ms`: ''}</div>
+        <div className="keyBlockDescription">{item.statusLabel}: {item.count} ({item.percent.toFixed(2)}%) {item.execDuration!==undefined ? `${displayDuration(item.execDuration.toFixed(0))}`: ''}</div>
       </div>;
     });
 
@@ -115,7 +119,7 @@ const Stripe = ({ data, width, combined, monitorIds }: AttributesListProps) => {
   ? `where entityGuid in (${monitorIds.map(id => `'${id}'`).join(', ')}) `
   : `where entityGuid = '${checkData.data.entityGuid}'`;
 
-return <Tooltip text={`${checkData.beginMoment.format('MMMM Do YYYY, h:mm:ss')} - ${checkData.endMoment.format('h:mm:ss')} ,  ${totalChecks} checks`}>
+return <Tooltip text={`${checkData.beginMoment.format('MMMM Do YYYY, h:mm:ss')} - ${checkData.endMoment.format('h:mm:ss')},  ${totalChecks} checks, ${displayDuration(blockDuration)}`}>
 
   <Popover >
   <PopoverTrigger >
@@ -137,7 +141,7 @@ return <Tooltip text={`${checkData.beginMoment.format('MMMM Do YYYY, h:mm:ss')} 
         </BlockText>
                 <NrqlQuery
             accountIds={[accountId]}
-            query={`SELECT toDateTime(timestamp,'h:m:s') as timestamp, locationLabel, result, entityGuid, executionDuration, id as checkId, monitorName  from SyntheticCheck since ${checkData.beginMoment.valueOf()} until ${checkData.endMoment.valueOf()}  ${queryFilter} limit max`}
+            query={`SELECT toDateTime(timestamp,'hh:mm:ss') as timestamp, locationLabel, result, entityGuid, executionDuration, id as checkId, monitorName  from SyntheticCheck since ${checkData.beginMoment.valueOf()} until ${checkData.endMoment.valueOf()}  ${queryFilter} limit max`}
             pollInterval={0} 
             formatType={NrqlQuery.FORMAT_TYPE.RAW}
           >
@@ -147,7 +151,7 @@ return <Tooltip text={`${checkData.beginMoment.format('MMMM Do YYYY, h:mm:ss')} 
                   return <tr>
                       <td>{item.timestamp}</td>
                       <td>{item.result}</td>
-                      <td>{item.executionDuration}</td>
+                      <td>{displayDuration(item.executionDuration)}</td>
                       { combined && (<td>{item.monitorName}</td>) }
                       { !combined && (<td>{item.locationLabel}</td>) }
                       <td><div onClick={()=>{
@@ -163,6 +167,7 @@ return <Tooltip text={`${checkData.beginMoment.format('MMMM Do YYYY, h:mm:ss')} 
                 });
 
                 return <><hr className="checkRuleDivider" />
+                  <div className="scrollableCheckTableContainer">
                   <table className="checkTable">
                     <tr>
                       <th>Time</th>
@@ -174,8 +179,8 @@ return <Tooltip text={`${checkData.beginMoment.format('MMMM Do YYYY, h:mm:ss')} 
                       <th>Detail</th>
                     </tr>
                   {tableRows}
-                  
                   </table>
+                  </div>
                 </>;
                 
       
@@ -219,7 +224,7 @@ return <Tooltip text={`${checkData.beginMoment.format('MMMM Do YYYY, h:mm:ss')} 
       <div className="latestStatusText">
         <span  className="latestStatus">{latestStatusDef?.statusLabel || latestStatus}</span>
           <br />
-        <span className="latestDuration" >{latestDuration}ms</span>
+        <span className="latestDuration" >{displayDuration(latestDuration)}</span>
       </div>
     </div>
   }

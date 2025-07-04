@@ -1,7 +1,7 @@
 {
     "private": true,
     "name": "nr1-synth-stack",
-    "version": "0.1.16",
+    "version": "0.1.20",
     "scripts": {
         "start": "nr1 nerdpack:serve",
         "test": "exit 0"

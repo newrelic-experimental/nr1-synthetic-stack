@@ -80,7 +80,13 @@
                 "type": "boolean",
                 "default": false
         },
-      
+         {
+                "name": "durationInMilliseconds",
+                "title": "Show duration in milliseconds",
+                "description": "Check if this view durations in milliseconds rather than seconds",
+                "type": "boolean",
+                "default": false
+        },
         {
             "name": "ignoreTimePicker",
             "title": "Ignore time picker",

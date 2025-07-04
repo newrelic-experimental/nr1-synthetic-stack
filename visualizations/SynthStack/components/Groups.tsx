@@ -45,7 +45,6 @@ const sortedData = data.sort((a, b) => {
     const isActive = !statusFilterList.includes(status.statusField);
     return (
     <div key={status} className="topkeyBlock" onClick={() => {
-      console.log("statusFilterList at button click", statusFilterList);
       if (statusFilterList.includes(status.statusField)) {
         removeFromFilterList(status.statusField);
       } else {
