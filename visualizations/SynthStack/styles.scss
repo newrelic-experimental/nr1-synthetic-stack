@@ -1,3 +1,6 @@
+
+
+
 .EmptyState,
 .ErrorState {
     height: 100%;
@@ -191,4 +194,27 @@
     font-size:0.8em;
     color:#9c9c9c;
     font-weight: bold;
+}
+
+
+// Deal with dark mode weirdness
+@media (prefers-color-scheme: dark) {
+  .topkeyStatusKey,
+  .latestStatusKey,
+  .stripeBlockInner {
+    filter: contrast(1.176) hue-rotate(180deg) invert(1) saturate(1.1); 
+  }
+  .stripeBlock, 
+  .stripeDurationBlockInner {
+     background-color: #b8b8b8 ;
+  }
+
+  .topkeyStatusLine2,
+  .latestCheckLabel {
+    color: #707070 ;
+  }
+
+  .monitorContainerCombined {
+    background-color: #ededed;
+  }
 }
