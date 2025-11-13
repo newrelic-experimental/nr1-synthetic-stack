@@ -23,7 +23,11 @@ const Stripe = ({ data, width, combined, monitorIds }: AttributesListProps) => {
   const bucketWidth = Math.floor((width - 120 - numberOfBuckets) / numberOfBuckets);
 
  const displayDuration = (duration)=>{
-  return durationInMilliseconds===true ? duration.toFixed(0) + 'ms' : (duration / 1000).toFixed(2) + 's' ;
+  if (duration === null || duration === undefined || isNaN(duration)) {
+    return 'N/A';
+  }
+  const numDuration = Number(duration);
+  return durationInMilliseconds===true ? numDuration.toFixed(0) + 'ms' : (numDuration / 1000).toFixed(2) + 's' ;
  }
 
   //work out the maximum duration across all the data blocks
@@ -105,7 +109,7 @@ const Stripe = ({ data, width, combined, monitorIds }: AttributesListProps) => {
       //totalChecks+=item.count;
       return <div key={idx} className="keyContainer">
         <div className="keyBlock" style={{backgroundColor: item.statusColor}}></div>
-        <div className="keyBlockDescription">{item.statusLabel}: {item.count} ({item.percent.toFixed(2)}%) {item.execDuration!==undefined ? `${displayDuration(item.execDuration.toFixed(0))}`: ''}</div>
+        <div className="keyBlockDescription">{item.statusLabel}: {item.count} ({item.percent.toFixed(2)}%) {(item.execDuration !== undefined && item.execDuration !== null) ? `${displayDuration(item.execDuration)}`: ''}</div>
       </div>;
     });
 
